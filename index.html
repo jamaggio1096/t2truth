@@ -1,111 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>T → T | Truth in Transition</title>
   <style>
     body {
-      background-color: #0a0a0a;
-      color: #00f7ff;
+      background-color: #121212;
+      color: #00ffff;
       font-family: Arial, sans-serif;
       padding: 20px;
     }
-    h1 {
+    h1, h2 {
       text-align: center;
-    }
-    .subtitle {
-      text-align: center;
-      font-size: 1.1em;
-      color: #bbb;
-      margin-bottom: 30px;
-    }
-    .box {
-      border: 1px solid #00f7ff;
-      padding: 20px;
-      border-radius: 10px;
-      margin: 20px auto;
-      max-width: 700px;
-      background-color: #111;
-    }
-    .flashpoint {
-      margin-top: 20px;
-    }
-    .flashpoint h3 {
-      margin-bottom: 10px;
-    }
-    .flashpoint ul {
-      list-style: none;
-      padding-left: 0;
-    }
-    .flashpoint ul li {
-      margin-bottom: 8px;
     }
     .tier-buttons button {
-      background-color: #00f7ff;
-      border: none;
+      background-color: #00ffff;
       color: #000;
-      padding: 10px 15px;
+      border: none;
       margin: 5px;
-      border-radius: 5px;
+      padding: 10px;
       cursor: pointer;
+      font-weight: bold;
     }
-    .post-box {
-      margin-top: 20px;
+    .tier-buttons button.active {
+      background-color: #ffcc00;
     }
-    textarea {
+    .input-section {
+      margin-top: 30px;
+    }
+    .input-section textarea {
       width: 100%;
       height: 100px;
       margin-top: 10px;
+      font-size: 16px;
       padding: 10px;
-      background-color: #222;
-      color: #fff;
-      border: 1px solid #00f7ff;
+    }
+    .input-section button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      background-color: #00ffff;
+      border: none;
+      cursor: pointer;
+    }
+    .posts {
+      margin-top: 40px;
+      background-color: #1e1e1e;
+      padding: 15px;
       border-radius: 5px;
     }
-    .submit-btn {
-      background-color: #00f7ff;
-      color: #000;
-      border: none;
-      padding: 10px 15px;
-      border-radius: 5px;
-      margin-top: 10px;
-      cursor: pointer;
+    .post {
+      border-bottom: 1px solid #444;
+      padding: 10px 0;
+    }
+    .post:last-child {
+      border-bottom: none;
     }
   </style>
 </head>
 <body>
+
   <h1>T → T</h1>
-  <div class="subtitle">Witness the shift — From listening to secondary source newscasters, to hearing the news from the world itself.</div>
+  <p style="text-align:center;">Witness the shift — From listening to secondary source newscasters, to hearing the news from the world itself.</p>
 
-  <div class="box">
-    <h2>Select Your Tier</h2>
-    <div class="tier-buttons">
-      <button>🔎 Truth Teller</button>
-      <button>🪶 Secret Sharer</button>
-      <button>🛡️ Anonymous Accessory</button>
-    </div>
-
-    <div class="post-box">
-      <h2>Post about a Live Event / Your Truth</h2>
-      <label for="event-type">Choose Event Type:</label>
-      <select id="event-type">
-        <option>Primary Source / Active Witness</option>
-        <option>Secondary Source / Observer</option>
-      </select>
-      <textarea placeholder="Type your truth here..."></textarea>
-      <button class="submit-btn">Post</button>
-    </div>
+  <div class="tier-buttons" style="text-align:center;">
+    <button onclick="selectTier(this)">🔍 Truth Teller</button>
+    <button onclick="selectTier(this)">✍️ Secret Sharer</button>
+    <button onclick="selectTier(this)">🕶️ Anonymous Accessory</button>
   </div>
 
-  <div class="box flashpoint">
-    <h3>Current Flashpoint Threads</h3>
-    <ul>
-      <li>🔥 Gaza Strip – Civilian footage contradicting mainstream narrative</li>
-      <li>🔥 Crimea – NATO proxy dynamics & deepfake drone footage</li>
-      <li>♨️ Taiwan – Strategic silence or looming storm?</li>
-      <li>🟥 Syria – Damascus fallen, Assad evacuated <span style="color: red;">Media Blackout</span></li>
-    </ul>
+  <div class="input-section">
+    <h2>Post about a Live Event / Your Truth</h2>
+    <label for="event-type">Choose Event Type:</label>
+    <select id="event-type">
+      <option>Primary Source / Active Witness</option>
+      <option>Secondary Source / Observer</option>
+    </select>
+    <textarea id="truth-input" placeholder="Type your truth here..."></textarea>
+    <button onclick="submitPost()">Post</button>
   </div>
+
+  <div class="posts" id="posts">
+    <h2>Current Flashpoint Threads</h2>
+    <div class="post">🔥 Gaza Strip — Civilian footage contradicting mainstream narrative</div>
+    <div class="post">🔥 Crimea — NATO proxy dynamics & deepfake drone footage</div>
+    <div class="post">♨️ Taiwan — Strategic silence or looming storm?</div>
+    <div class="post">🩸 Syria — Damascus fallen, Assad evacuated <span style="color: red;">[Media Blackout]</span></div>
+  </div>
+
+  <script>
+    function selectTier(button) {
+      const buttons = document.querySelectorAll('.tier-buttons button');
+      buttons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+    }
+
+    function submitPost() {
+      const text = document.getElementById('truth-input').value.trim();
+      const tier = document.querySelector('.tier-buttons .active')?.textContent || 'Unknown Tier';
+      const type = document.getElementById('event-type').value;
+
+      if (text === '') {
+        alert("Please type your truth before posting.");
+        return;
+      }
+
+      const postsContainer = document.getElementById('posts');
+      const postDiv = document.createElement('div');
+      postDiv.className = 'post';
+      postDiv.innerHTML = `<strong>${tier}</strong> | <em>${type}</em><br>${text}`;
+      postsContainer.appendChild(postDiv);
+
+      // Clear textarea
+      document.getElementById('truth-input').value = '';
+    }
+  </script>
+
 </body>
 </html>
