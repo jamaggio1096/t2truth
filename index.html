@@ -4,56 +4,66 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>T → T | Truth in Transition</title>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-  <script defer src="app.js"></script>
   <style>
     body { background-color: #121212; color: #00ffff; font-family: Arial, sans-serif; padding: 20px; }
     h1, h2 { text-align: center; }
-    input, select, textarea, button { margin-top: 10px; padding: 10px; width: 100%; max-width: 400px; }
-    button { background-color: #00ffff; color: #000; border: none; cursor: pointer; font-weight: bold; }
-    .centered { text-align: center; margin-top: 30px; }
-    .post { background-color: #1e1e1e; margin: 10px 0; padding: 10px; border-radius: 5px; }
-    .auth-block, .post-block { max-width: 600px; margin: auto; margin-top: 20px; text-align: center; }
-    .tier-buttons button { background-color: #00ffff; color: #000; margin: 5px; padding: 10px; font-weight: bold; border: none; cursor: pointer; }
-    .tier-buttons button.active { background-color: #ffcc00; }
-    #logout-btn { background-color: #ff4444; margin-top: 20px; }
+    textarea, select, button { display: block; width: 100%; max-width: 600px; margin: 10px auto; padding: 10px; }
+    button { background-color: #00ffff; color: #000; border: none; font-weight: bold; cursor: pointer; }
+    .tier-buttons { text-align: center; margin-top: 20px; }
+    .tier-buttons button { margin: 5px; padding: 10px 20px; font-weight: bold; }
+    .tier-buttons button.active { background-color: #ffcc00; color: #000; }
+    .post { background-color: #1e1e1e; padding: 10px; margin: 10px auto; max-width: 600px; border-radius: 5px; }
   </style>
 </head>
 <body>
   <h1>T → T</h1>
-  <p class="centered">Witness the shift — From listening to secondary source newscasters, to hearing the news from the world itself.</p>
+  <p style="text-align:center;">Witness the shift — From listening to secondary source newscasters, to hearing the news from the world itself.</p>
 
-  <div class="auth-block" id="auth-block">
-    <h2>Login / Register</h2>
-    <input type="email" id="email" placeholder="Email" />
-    <input type="password" id="password" placeholder="Password" />
-    <button onclick="register()">Register</button>
-    <button onclick="login()">Login</button>
-    <button onclick="anonymousLogin()">Continue Anonymously</button>
+  <div class="tier-buttons">
+    <button onclick="selectTier(this)">🔍 Truth Teller</button>
+    <button onclick="selectTier(this)">✍️ Secret Sharer</button>
+    <button onclick="selectTier(this)">🕶️ Anonymous Accessory</button>
   </div>
 
-  <div class="post-block" id="post-block" style="display:none;">
-    <button id="logout-btn" onclick="logout()">Logout</button>
+  <select id="event-type">
+    <option>Primary Source / Active Witness</option>
+    <option>Secondary Source / Observer</option>
+  </select>
 
-    <div class="tier-buttons" style="text-align:center;">
-      <button onclick="selectTier(this)">🔍 Truth Teller</button>
-      <button onclick="selectTier(this)">✍️ Secret Sharer</button>
-      <button onclick="selectTier(this)">🕶️ Anonymous Accessory</button>
-    </div>
+  <textarea id="truth-input" placeholder="Type your truth here..."></textarea>
+  <button onclick="submitPost()">Post</button>
 
-    <select id="event-type">
-      <option>Primary Source / Active Witness</option>
-      <option>Secondary Source / Observer</option>
-    </select>
-    <textarea id="truth-input" placeholder="Type your truth here..."></textarea>
-    <button onclick="submitPost()">Post</button>
-  </div>
-
-  <div class="centered">
-    <h2>Live Posts</h2>
+  <div>
+    <h2 style="text-align:center;">Live Posts</h2>
     <div id="posts"></div>
   </div>
+
+  <script>
+    const posts = [];
+
+    function selectTier(button) {
+      const buttons = document.querySelectorAll('.tier-buttons button');
+      buttons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+    }
+
+    function submitPost() {
+      const tier = document.querySelector('.tier-buttons .active')?.textContent || "Unknown Tier";
+      const eventType = document.getElementById("event-type").value;
+      const truth = document.getElementById("truth-input").value.trim();
+
+      if (!truth) return alert("Please write something.");
+
+      const postHTML = `
+        <div class="post">
+          <strong>${tier}</strong> | <em>${eventType}</em><br>
+          ${truth}<br><small>${new Date().toLocaleString()}</small>
+        </div>
+      `;
+
+      document.getElementById("posts").insertAdjacentHTML("afterbegin", postHTML);
+      document.getElementById("truth-input").value = "";
+    }
+  </script>
 </body>
 </html>
