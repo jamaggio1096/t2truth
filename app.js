@@ -58,3 +58,27 @@ window.onload = () => {
     if (user) loadPosts();
   });
 };
+// --- Auth Handlers ---
+
+// Anonymous Login
+document.getElementById("anon-login").addEventListener("click", () => {
+  auth.signInAnonymously().catch(alert);
+});
+
+// Google Login
+document.getElementById("google-login").addEventListener("click", () => {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  auth.signInWithPopup(provider).catch(alert);
+});
+
+// Logout
+document.getElementById("logout").addEventListener("click", () => {
+  auth.signOut();
+});
+
+// Listen for auth changes
+auth.onAuthStateChanged(user => {
+  document.getElementById("auth-section").style.display = user ? "none" : "block";
+  document.getElementById("main-section").style.display = user ? "block" : "none";
+  if (user) loadPosts();
+});
