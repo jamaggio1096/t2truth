@@ -4,6 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>T → T | Truth in Transition</title>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js"></script>
+
   <style>
     body {
       background-color: #121212;
@@ -13,6 +18,9 @@
     }
     h1, h2 {
       text-align: center;
+    }
+    .tier-buttons, .input-section {
+      display: none;
     }
     .tier-buttons button {
       background-color: #00ffff;
@@ -25,9 +33,6 @@
     }
     .tier-buttons button.active {
       background-color: #ffcc00;
-    }
-    .input-section {
-      margin-top: 30px;
     }
     .input-section textarea {
       width: 100%;
@@ -61,9 +66,13 @@
   </style>
 </head>
 <body>
-
   <h1>T → T</h1>
   <p style="text-align:center;">Witness the shift — From listening to secondary source newscasters, to hearing the news from the world itself.</p>
+
+  <div id="login-section" style="text-align:center; margin-bottom: 20px;">
+    <button onclick="signInWithGoogle()">Sign in with Google</button>
+    <p id="user-info" style="margin-top: 10px;"></p>
+  </div>
 
   <div class="tier-buttons" style="text-align:center;">
     <button onclick="selectTier(this)">🔍 Truth Teller</button>
@@ -91,6 +100,45 @@
   </div>
 
   <script>
+    // Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyDwy-jMzTqlqH3R7KMXVNJJky9imtrqTDo",
+      authDomain: "t2truth-3452b.firebaseapp.com",
+      projectId: "t2truth-3452b",
+      storageBucket: "t2truth-3452b.firebasestorage.app",
+      messagingSenderId: "432180268294",
+      appId: "1:432180268294:web:3493691768977df7fa2287",
+      measurementId: "G-9D2D6T7FM0"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    function signInWithGoogle() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider)
+        .then((result) => {
+          const user = result.user;
+          document.getElementById('user-info').textContent = `Signed in as ${user.email}`;
+          document.getElementById('login-section').style.display = 'none';
+          document.querySelector('.tier-buttons').style.display = 'block';
+          document.querySelector('.input-section').style.display = 'block';
+        })
+        .catch((error) => {
+          console.error(error);
+          alert("Login failed.");
+        });
+    }
+
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        document.getElementById('user-info').textContent = `Signed in as ${user.email}`;
+        document.getElementById('login-section').style.display = 'none';
+        document.querySelector('.tier-buttons').style.display = 'block';
+        document.querySelector('.input-section').style.display = 'block';
+      }
+    });
+
     function selectTier(button) {
       const buttons = document.querySelectorAll('.tier-buttons button');
       buttons.forEach(btn => btn.classList.remove('active'));
@@ -110,13 +158,10 @@
       const postsContainer = document.getElementById('posts');
       const postDiv = document.createElement('div');
       postDiv.className = 'post';
-      postDiv.innerHTML = `<strong>${tier}</strong> | <em>${type}</em><br>${text}`;
+      postDiv.innerHTML = `<strong>${tier}</strong> (${type}): ${text}`;
       postsContainer.appendChild(postDiv);
-
-      // Clear textarea
       document.getElementById('truth-input').value = '';
     }
   </script>
-
 </body>
 </html>
