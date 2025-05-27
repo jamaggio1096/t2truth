@@ -2,176 +2,48 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>T → T | Truth in Transition</title>
-
-  <!-- Firebase SDKs (non-module for HTML use) -->
-  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js"></script>
-
   <style>
     body {
-      background-color: #121212;
-      color: #00ffff;
+      background-color: #111;
+      color: #00f0ff;
       font-family: Arial, sans-serif;
-      padding: 20px;
-    }
-
-    h1, h2 {
       text-align: center;
+      padding: 30px;
     }
-
-    .tier-buttons {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .tier-buttons button {
-      background-color: #00ffff;
-      color: #000;
-      border: none;
-      margin: 5px;
-      padding: 10px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .tier-buttons button.active {
-      background-color: #ffcc00;
-    }
-
-    .input-section {
-      display: none;
-      margin-top: 30px;
-    }
-
-    .input-section textarea {
-      width: 100%;
-      height: 100px;
-      margin-top: 10px;
-      font-size: 16px;
-      padding: 10px;
-    }
-
-    .input-section button {
-      margin-top: 10px;
+    button {
+      margin: 10px;
       padding: 10px 20px;
       font-size: 16px;
-      font-weight: bold;
-      background-color: #00ffff;
-      border: none;
       cursor: pointer;
     }
-
-    .posts {
+    #feedContainer {
       margin-top: 40px;
-      background-color: #1e1e1e;
-      padding: 15px;
-      border-radius: 5px;
-    }
-
-    .post {
-      border-bottom: 1px solid #444;
-      padding: 10px 0;
-    }
-
-    .post:last-child {
-      border-bottom: none;
-    }
-
-    #user-info {
-      text-align: center;
-      margin-bottom: 20px;
-      font-style: italic;
+      text-align: left;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      color: white;
     }
   </style>
 </head>
 <body>
   <h1>T → T</h1>
-  <p style="text-align:center;">Witness the shift — From listening to secondary source newscasters, to hearing the news from the world itself.</p>
+  <p><em>Click a tier below to begin</em></p>
 
-  <div id="user-info">Click a tier below to begin</div>
+  <button id="truthTellerBtn">🔍 Truth Teller</button>
+  <button id="secretSharerBtn">✍️ Secret Sharer</button>
+  <button id="anonAccessBtn">🕶️ Anonymous Accessory</button>
 
-  <div class="tier-buttons">
-    <button onclick="startLogin(this)">🔍 Truth Teller</button>
-    <button onclick="startLogin(this)">✍️ Secret Sharer</button>
-    <button onclick="startLogin(this)">🕶️ Anonymous Accessory</button>
+  <div>
+    <button id="googleSignInBtn">Sign in with Google</button>
   </div>
 
-  <div class="input-section">
-    <h2>Post about a Live Event / Your Truth</h2>
-    <label for="event-type">Choose Event Type:</label>
-    <select id="event-type">
-      <option>Primary Source / Active Witness</option>
-      <option>Secondary Source / Observer</option>
-    </select>
-    <textarea id="truth-input" placeholder="Type your truth here..."></textarea>
-    <button onclick="submitPost()">Post</button>
+  <div id="feedContainer">
+    <!-- Flashpoint Feed will go here -->
   </div>
 
-  <div class="posts" id="posts">
-    <h2>Current Flashpoint Threads</h2>
-    <div class="post">🔥 Gaza Strip — Civilian footage contradicting mainstream narrative</div>
-    <div class="post">🔥 Crimea — NATO proxy dynamics & deepfake drone footage</div>
-    <div class="post">♨️ Taiwan — Strategic silence or looming storm?</div>
-    <div class="post">🛑 Syria — Damascus fallen, Assad evacuated <span style="color: red;">[Media Blackout]</span></div>
-  </div>
-
-  <script>
-    // Firebase Config (from your project)
-    const firebaseConfig = {
-      apiKey: "AIzaSyDwy-jMzTqlqH3R7KMXVNJJky9imtrqTDo",
-      authDomain: "t2truth-3452b.firebaseapp.com",
-      projectId: "t2truth-3452b",
-      storageBucket: "t2truth-3452b.firebasestorage.app",
-      messagingSenderId: "432180268294",
-      appId: "1:432180268294:web:3493691768977df7fa2287",
-      measurementId: "G-9D2D6T7FM0"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-
-    let selectedTier = '';
-
-    function startLogin(button) {
-      selectedTier = button.textContent;
-      const provider = new firebase.auth.GoogleAuthProvider();
-      auth.signInWithPopup(provider)
-        .then(result => {
-          const user = result.user;
-          document.getElementById('user-info').textContent = `Welcome, ${user.email} — Tier: ${selectedTier}`;
-          document.querySelector('.input-section').style.display = 'block';
-          highlightTier(button);
-        })
-        .catch(err => {
-          console.error(err);
-          alert("Login failed.");
-        });
-    }
-
-    function highlightTier(button) {
-      const buttons = document.querySelectorAll('.tier-buttons button');
-      buttons.forEach(btn => btn.classList.remove('active'));
-      button.classList.add('active');
-    }
-
-    function submitPost() {
-      const text = document.getElementById('truth-input').value.trim();
-      const type = document.getElementById('event-type').value;
-
-      if (text === '') {
-        alert("Please type your truth before posting.");
-        return;
-      }
-
-      const postsContainer = document.getElementById('posts');
-      const postDiv = document.createElement('div');
-      postDiv.className = 'post';
-      postDiv.innerHTML = `<strong>${selectedTier}</strong> (${type}): ${text}`;
-      postsContainer.appendChild(postDiv);
-      document.getElementById('truth-input').value = '';
-    }
-  </script>
+  <script type="module" src="index.js"></script>
 </body>
 </html>
