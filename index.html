@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>T → T | Truth in Transition</title>
+  <style>
+    body {
+      background-color: #121212;
+      color: #00ffff;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    h1, h2 {
+      text-align: center;
+    }
+
+    .tier-buttons {
+      text-align: center;
+    }
+
+    .tier-buttons button {
+      background-color: #00ffff;
+      color: #000;
+      border: none;
+      margin: 5px;
+      padding: 10px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .tier-buttons button.active {
+      background-color: #ffc000;
+    }
+
+    .input-section {
+      margin-top: 30px;
+    }
+
+    .input-section textarea {
+      width: 100%;
+      height: 100px;
+      margin-top: 10px;
+      font-size: 16px;
+      padding: 10px;
+    }
+
+    .input-section button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      background-color: #00ffff;
+      border: none;
+      cursor: pointer;
+    }
+
+    .posts {
+      margin-top: 40px;
+      background-color: #1e1e1e;
+      padding: 15px;
+      border-radius: 5px;
+    }
+
+    .post {
+      border-bottom: 1px solid #444;
+      padding: 10px 0;
+    }
+
+    .post:last-child {
+      border-bottom: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>T → T</h1>
+  <p style="text-align:center;">Witness the Shift</p>
+
+  <div class="tier-buttons">
+    <button onclick="selectTier(this)">🔍 Truth Teller</button>
+    <button onclick="selectTier(this)">✍️ Secret Sharer</button>
+    <button onclick="selectTier(this)">🕶️ Anonymous Accessory</button>
+  </div>
+
+  <div class="input-section">
+    <h2>Post about a Live Event / Your Truth</h2>
+    <label for="event-type">Choose Event Type:</label>
+    <select id="event-type">
+      <option>Primary Source / Active Witness</option>
+      <option>Secondary Source / Observer</option>
+    </select>
+    <textarea id="truth-input" placeholder="Type your truth here..."></textarea>
+    <button onclick="submitPost()">Post</button>
+  </div>
+
+  <div class="posts" id="posts">
+    <h2>Current Flashpoint Threads</h2>
+    <div class="post">🔥 Gaza Strip – Civilian Crisis</div>
+    <div class="post">🔥 Crimea – NATO Proxy Shadow War</div>
+    <div class="post">♨️ Taiwan – Strategic Strait Control</div>
+    <div class="post">🩸 Syria – Damascus Factions</div>
+  </div>
+
+  <script>
+    function selectTier(button) {
+      const buttons = document.querySelectorAll('.tier-buttons button');
+      buttons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+    }
+
+    function submitPost() {
+      const text = document.getElementById('truth-input').value.trim();
+      const tier = document.querySelector('.tier-buttons button.active')?.textContent || "Unclassified";
+      const type = document.getElementById('event-type').value;
+
+      if (text === '') {
+        alert("Please type your truth before posting.");
+        return;
+      }
+
+      const postsContainer = document.getElementById('posts');
+      const postDiv = document.createElement('div');
+      postDiv.className = 'post';
+      postDiv.innerHTML = `<strong>${tier}</strong> (${type}): ${text}`;
+      postsContainer.appendChild(postDiv);
+
+      // Clear textarea
+      document.getElementById('truth-input').value = '';
+    }
+  </script>
+</body>
+</html>
