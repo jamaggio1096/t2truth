@@ -155,6 +155,50 @@
         alert("Sign-in failed: " + error.message);
       });
   }
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js"></script>
+
+<script>
+  const db = firebase.firestore();
+
+  // Function to post a message
+  function postTruth() {
+    const message = document.getElementById("truthInput").value;
+    const role = sessionStorage.getItem("userRole") || "Anonymous";
+
+    db.collection("truthFeed").add({
+      message: message,
+      role: role,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(() => {
+      document.getElementById("truthInput").value = "";
+      loadFeed(); // Reload feed after posting
+    });
+  }
+
+  // Function to load the feed
+  function loadFeed() {
+    const feedDiv = document.getElementById("feed");
+    feedDiv.innerHTML = "";
+
+    db.collection("truthFeed")
+      .orderBy("timestamp", "desc")
+      .onSnapshot((snapshot) => {
+        snapshot.forEach((doc) => {
+          const post = doc.data();
+          const postElement = document.createElement("div");
+          postElement.innerHTML = `<strong>${post.role}:</strong> ${post.message}`;
+          feedDiv.appendChild(postElement);
+        });
+      });
+  }
+
+  // Call on page load
+  window.onload = loadFeed;
+</script>
+<textarea id="truthInput" placeholder="Post your truth..."></textarea>
+<button onclick="postTruth()">Submit</button>
+
+<div id="feed"></div>
 </script>
 </body>
 </html>
