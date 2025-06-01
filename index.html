@@ -129,5 +129,32 @@
       document.getElementById('truth-input').value = '';
     }
   </script>
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    appId: "YOUR_APP_ID"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+
+  function signInWithGoogle(role) {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider)
+      .then((result) => {
+        sessionStorage.setItem('userRole', role);
+        window.location.href = '/dashboard/' + role.toLowerCase();
+      })
+      .catch((error) => {
+        alert("Sign-in failed: " + error.message);
+      });
+  }
+</script>
 </body>
 </html>
