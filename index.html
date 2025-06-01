@@ -197,8 +197,26 @@
 </script>
 <textarea id="truthInput" placeholder="Post your truth..."></textarea>
 <button onclick="postTruth()">Submit</button>
-
 <div id="feed"></div>
 </script>
+<input type="text" id="truthInput" placeholder="Post your truth...">
+<button onclick="submitTruth()">Submit</button>
+<ul id="flashpointFeed"></ul>
+<script>
+  function submitTruth() {
+    const input = document.getElementById('truthInput');
+    const feed = document.getElementById('flashpointFeed');
+    const text = input.value.trim();
+
+    if (text !== '') {
+      const li = document.createElement('li');
+      li.textContent = text;
+      feed.appendChild(li);
+      input.value = '';
+    }
+  }
+</script>
+</body>
+</html>
 </body>
 </html>
